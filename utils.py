@@ -4,15 +4,15 @@ import json
 from tqdm import tqdm
 import time
 
-def load_json(DATA_DIR, file_name):
-    with open(os.path.join(DATA_DIR, file_name)) as f:
+def load_json(data_directory, file_name):
+    with open(os.path.join(data_directory, file_name)) as f:
         data = json.load(f)
     f.close
 
     return data
 
-def load_csv(DATA_DIR, file_name):
-    with open(os.path.join(DATA_DIR, file_name), encoding='utf-8') as f:
+def load_csv(data_directory, dictionary_name):
+    with open(os.path.join(data_directory, dictionary_name), encoding='utf-8') as f:
         reader = csv.reader(f)
         data = list(reader)
         data = {item[1]: item[0] for item in data[1:]}
@@ -44,7 +44,9 @@ def reshape_data(DATA, DICTIONARY, instruction, source):
             dialogue = [f"[USER] {user_utterance}", f"[SYSTEM] {system_response}"]
             dialogues.extend(dialogue)
 
-            INPUT = ' '.join(map(str, dialogues[:-1]))
+            chat_input = ' '.join(map(str, dialogues[:-1]))
+
+            INPUT = '[SYSTEM] 안녕하세요! 오늘 좀 어떠신가요? ' + chat_input
             OUTPUT = dialogues[-1].replace('[SYSTEM] ','')
 
             # Put together to generate a conversation instance
@@ -61,7 +63,7 @@ def reshape_data(DATA, DICTIONARY, instruction, source):
 
     return data
 
-def save_data(data, DATA_DIR, file_name):
-    with open(os.path.join(DATA_DIR,file_name),'w') as f:
+def save_data(data, data_directory, output_name):
+    with open(os.path.join(data_directory, output_name),'w') as f:
         json.dump(data, f)
     f.close()
